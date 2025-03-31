@@ -1,6 +1,6 @@
 package CLIToDoList;
 
-public class Task {
+public class Task{
     String taskName;
     String dueDate;
     int category; // 0: important, 1: business, 2: personal

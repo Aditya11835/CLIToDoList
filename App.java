@@ -1,11 +1,6 @@
 package CLIToDoList;
-
-import java.util.Scanner;
-import java.io.File;
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.BufferedReader;
-
+import java.util.*;
+import java.io.*;
 public class App {
     public static void main(String args[]) {
         BufferedReader personalReader, completedReader, businessReader, urgentReader;
@@ -77,7 +72,7 @@ public class App {
                     Data.addTask(temp);
                     break;
                 case 2:
-                    Data.displayTasks();
+                    Data.displayTasks(sc);
                     break;
                 case 3:
                     System.out.println("Delete Task feature not implemented yet.");
