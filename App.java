@@ -43,12 +43,13 @@ public class App {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.println(
-                "==============================\n" +
-                "||     TO DO LIST APP      ||\n" +
-                "||        Welcome!         ||\n" +
-                "==============================\n"
-        );
+        System.out.println("████████╗ ██████╗       ██████╗  ██████╗     ██╗     ██╗███████╗████████╗");
+        System.out.println("╚══██╔══╝██╔═══██╗      ██╔══██╗██╔═══██╗    ██║     ██║██╔════╝╚══██╔══╝");
+        System.out.println("   ██║   ██║   ██║█████╗██║  ██║██║   ██║    ██║     ██║███████╗   ██║   ");
+        System.out.println("   ██║   ██║   ██║╚════╝██║  ██║██║   ██║    ██║     ██║╚════██║   ██║   ");
+        System.out.println("   ██║   ╚██████╔╝      ██████╔╝╚██████╔╝    ███████╗██║███████║   ██║   ");
+        System.out.println("   ╚═╝    ╚═════╝       ╚═════╝  ╚═════╝     ╚══════╝╚═╝╚══════╝   ╚═╝   ");
+        System.out.println();
 
         int choice = 0;
         while (choice != 5) {
