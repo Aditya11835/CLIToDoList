@@ -3,39 +3,29 @@ import java.util.*;
 import java.io.*;
 public class App {
     public static void main(String args[]) {
-        BufferedReader personalReader, completedReader, businessReader, urgentReader;
+        File counterFile = new File("counter.txt");
+        if (!counterFile.exists()) {
+            try (FileWriter writer = new FileWriter(counterFile)) {
+                writer.write("0"); // write default count
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try (BufferedReader counterReader = new BufferedReader(new FileReader(counterFile))) {
+            String counterLine = counterReader.readLine();
+            if (counterLine != null && !counterLine.isEmpty()) {
+                Task.count = Integer.parseInt(counterLine.trim());
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+            Task.count = 0; // fallback default
+        }
+        
+        /*BufferedReader personalReader, completedReader, businessReader, urgentReader;
         File completedFile = new File("completed.txt");
         File personalFile = new File("personal.txt");
         File businessFile = new File("business.txt");
-        File urgentFile = new File("urgent.txt");
-
-        if (completedFile.exists() && personalFile.exists() && businessFile.exists() && urgentFile.exists()) {
-            System.out.println("Loading data...");
-            try {
-                personalReader = new BufferedReader(new FileReader("personal.txt"));
-                completedReader = new BufferedReader(new FileReader("completed.txt"));
-                businessReader = new BufferedReader(new FileReader("business.txt"));
-                urgentReader = new BufferedReader(new FileReader("urgent.txt"));
-                
-                // Make sure to close these later
-            } catch (IOException e) {
-                System.out.println("An error occurred while reading the files.");
-                e.printStackTrace();
-                System.exit(-1);
-            }
-        } else {
-            try {
-                if (completedFile.createNewFile() && personalFile.createNewFile()
-                        && businessFile.createNewFile() && urgentFile.createNewFile()) {
-                    System.out.println("Creating data files...");
-                }
-            } catch (IOException e) {
-                System.out.println("An error occurred while creating the file.");
-                e.printStackTrace();
-                System.exit(-1);
-            }
-        }
-
+        File urgentFile = new File("urgent.txt");*/
         Scanner sc = new Scanner(System.in);
 
         System.out.println("████████╗ ██████╗       ██████╗  ██████╗     ██╗     ██╗███████╗████████╗");
@@ -81,6 +71,7 @@ public class App {
                     System.out.println("Mark as Completed feature not implemented yet.");
                     break;
                 case 5:
+                    //Update values to file
                     System.out.println("Exiting To Do List App. Goodbye!");
                     break;
                 default:
