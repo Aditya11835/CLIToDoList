@@ -65,7 +65,7 @@ public class App {
                     Data.displayTasks(sc);
                     break;
                 case 3:
-                    System.out.println("Delete Task feature not implemented yet.");
+                    Data.deleteTask();
                     break;
                 case 4:
                     System.out.println("Mark as Completed feature not implemented yet.");
@@ -78,7 +78,12 @@ public class App {
                     System.out.println("Invalid choice. Try again.");
             }
         }
-        
+        try (FileWriter writer = new FileWriter(counterFile)) {
+                writer.write(String.valueOf(Task.count));
+        } catch (IOException e)
+        {
+                e.printStackTrace();
+        }
         sc.close();
     }
 
@@ -91,7 +96,7 @@ public class App {
         sc.nextLine(); 
 
         String dueDate = "";
-        System.out.print("Enter due date? 1 for Yes, anything else for No: ");
+        System.out.print("Enter due date? 1 for Yes, any other number for No: ");
         int flag = sc.nextInt();
         sc.nextLine();
 

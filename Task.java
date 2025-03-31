@@ -18,7 +18,7 @@ public class Task{
         this.dueDate = dueDate;
     }
     
-    @Override
+    /*@Override
     public String toString() {
         return "Task{" +
                 "taskName='" + taskName + '\'' +
@@ -26,5 +26,5 @@ public class Task{
                 ", category='" + category + '\'' +
                 ", isCompleted=" + isCompleted +
                 '}';
-    }
+    }*/
 }

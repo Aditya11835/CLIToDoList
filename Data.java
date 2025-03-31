@@ -21,6 +21,16 @@ public class Data{
                 System.out.println("Invalid category: " + task.category);
         }
     }
+    
+    public static void deleteTask(){
+        System.out.printf("%-25s %-15s %-15s %-10s %-10s\n", "Task Name", "Due Date", "Category", "Completed", "ID");
+        System.out.println("-------------------------------------------------------------------------");
+        printTaskListWithID(importantTasks, "Urgent");
+        printTaskListWithID(businessTasks, "Business");
+        printTaskListWithID(personalTasks, "Personal");
+        System.out.println("Enter ID of task to be deleted. Enter 0 to go back.");
+        
+    }
 
     public static void displayTasks(Scanner sc) {
         System.out.println("\nWhich tasks do you want to view?");
@@ -82,6 +92,20 @@ public class Data{
                     task.dueDate,
                     category,
                     task.isCompleted ? "Yes" : "No");
+        }
+    }
+    
+    private static void printTaskListWithID(ArrayList<Task> taskList, String category) {
+        if (taskList == null || taskList.isEmpty()) {
+            return;
+        }
+        for (Task task : taskList) {
+            System.out.printf("%-25s %-15s %-15s %-10s %-10s\n",
+                    task.taskName,
+                    task.dueDate,
+                    category,
+                    task.isCompleted ? "Yes" : "No",
+                    task.id);
         }
     }
 }
