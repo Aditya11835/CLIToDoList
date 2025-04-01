@@ -31,15 +31,14 @@ public class App {
             }
         }
 
-        // Load Task.count from counter.txt
+        int savedCount = 0;
         try (BufferedReader counterReader = new BufferedReader(new FileReader(counterFile))) {
             String counterLine = counterReader.readLine();
             if (counterLine != null && !counterLine.isEmpty()) {
-                Task.count = Integer.parseInt(counterLine.trim());
+                savedCount = Integer.parseInt(counterLine.trim());
             }
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
-            Task.count = 0; // fallback default
         }
 
         // Ensure data.txt exists
@@ -62,6 +61,7 @@ public class App {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Task.count = Math.max(Task.count, savedCount);
         Data.categorizeTasks();
 
         // ASCII Banner
