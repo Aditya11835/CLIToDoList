@@ -4,6 +4,7 @@ import java.io.*;
 public class App {
     public static void main(String args[]) {
         File counterFile = new File("counter.txt");
+        File dataFile = new File("data.txt");
         if (!counterFile.exists()) {
             try (FileWriter writer = new FileWriter(counterFile)) {
                 writer.write("0"); // write default count
@@ -20,12 +21,25 @@ public class App {
             e.printStackTrace();
             Task.count = 0; // fallback default
         }
-        
-        /*BufferedReader personalReader, completedReader, businessReader, urgentReader;
-        File completedFile = new File("completed.txt");
-        File personalFile = new File("personal.txt");
-        File businessFile = new File("business.txt");
-        File urgentFile = new File("urgent.txt");*/
+        if (!dataFile.exists()) {
+            try {
+                dataFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try (BufferedReader dataReader = new BufferedReader(new FileReader(dataFile))) {
+            String dataLine;
+            while ((dataLine = dataReader.readLine()) != null) {
+                if (!dataLine.isEmpty()) {
+                    Data.allTasks.add(Task.parseFromLine(dataLine));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Data.categorizeTasks();
         Scanner sc = new Scanner(System.in);
 
         System.out.println("████████╗ ██████╗       ██████╗  ██████╗     ██╗     ██╗███████╗████████╗");

@@ -2,34 +2,68 @@ package CLIToDoList;
 import java.util.*;
 
 public class Data{
+    static ArrayList<Task> allTasks = new ArrayList<>();
     static ArrayList<Task> importantTasks = new ArrayList<>();
     static ArrayList<Task> businessTasks = new ArrayList<>();
     static ArrayList<Task> personalTasks = new ArrayList<>();
 
-    public static void addTask(Task task) {
-        switch (task.category) {
-            case 0:
-                importantTasks.add(task);
-                break;
-            case 1:
-                businessTasks.add(task);
-                break;
-            case 2:
-                personalTasks.add(task);
-                break;
-            default:
-                System.out.println("Invalid category: " + task.category);
+    public static void categorizeTasks() {
+        importantTasks.clear();
+        businessTasks.clear();
+        personalTasks.clear();
+
+        for (Task task : allTasks) {
+            switch (task.category) {
+                case 0 -> importantTasks.add(task);
+                case 1 -> businessTasks.add(task);
+                case 2 -> personalTasks.add(task);
+            }
         }
+
+        // Sort all lists by creation ID (oldest to newest)
+        Comparator<Task> byId = Comparator.comparingLong(t -> t.id);
+        allTasks.sort(byId);
+        importantTasks.sort(byId);
+        businessTasks.sort(byId);
+        personalTasks.sort(byId);
     }
-    
-    public static void deleteTask(){
+
+    public static void addTask(Task task) {
+        allTasks.add(task);
+        categorizeTasks();
+    }
+
+    public static void deleteTask() {
+        Scanner sc = new Scanner(System.in);
+
         System.out.printf("%-25s %-15s %-15s %-10s %-10s\n", "Task Name", "Due Date", "Category", "Completed", "ID");
         System.out.println("-------------------------------------------------------------------------");
-        printTaskListWithID(importantTasks, "Urgent");
-        printTaskListWithID(businessTasks, "Business");
-        printTaskListWithID(personalTasks, "Personal");
-        System.out.println("Enter ID of task to be deleted. Enter 0 to go back.");
-        
+
+        printTaskListWithID(allTasks);
+
+        System.out.println("\nEnter ID of task to be deleted. Enter 0 to go back.");
+        long idToDelete;
+
+        try {
+            idToDelete = Long.parseLong(sc.nextLine());
+
+            if (idToDelete == 0) {
+                System.out.println("Cancelled.");
+                return;
+            }
+
+            boolean removed = allTasks.removeIf(task -> task.id == idToDelete);
+
+            if (removed) {
+                System.out.println("Task with ID " + idToDelete + " deleted successfully.");
+                categorizeTasks(); // Re-sync categorized lists
+            } else {
+                System.out.println("No task found with that ID.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a valid task ID.");
+        }
     }
 
     public static void displayTasks(Scanner sc) {
@@ -95,7 +129,7 @@ public class Data{
         }
     }
     
-    private static void printTaskListWithID(ArrayList<Task> taskList, String category) {
+    private static void printTaskListWithID(ArrayList<Task> taskList) {
         if (taskList == null || taskList.isEmpty()) {
             return;
         }
@@ -103,7 +137,7 @@ public class Data{
             System.out.printf("%-25s %-15s %-15s %-10s %-10s\n",
                     task.taskName,
                     task.dueDate,
-                    category,
+                    task.category,
                     task.isCompleted ? "Yes" : "No",
                     task.id);
         }

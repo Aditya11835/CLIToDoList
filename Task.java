@@ -17,14 +17,13 @@ public class Task{
         this.isCompleted = false;
         this.dueDate = dueDate;
     }
-    
-    /*@Override
-    public String toString() {
-        return "Task{" +
-                "taskName='" + taskName + '\'' +
-                ", dueDate='" + dueDate + '\'' +
-                ", category='" + category + '\'' +
-                ", isCompleted=" + isCompleted +
-                '}';
-    }*/
+
+    public static Task parseFromLine(String line) {
+        String[] parts = line.split("\\|");
+        Task task = new Task(parts[1], Integer.parseInt(parts[2]), parts[4]);
+        task.id = Long.parseLong(parts[0]);
+        task.isCompleted = Boolean.parseBoolean(parts[3]);
+        Task.count = Math.max(Task.count, task.id);
+        return task;
+    }
 }
