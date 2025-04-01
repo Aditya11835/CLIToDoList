@@ -1,0 +1,4 @@
+1|A|0|false|N/A
+2|B|1|false|N/A
+3|C|2|false|N/A
+4|D|0|false|15-12-2004
