@@ -82,7 +82,7 @@ public class App {
                     Data.deleteTask();
                     break;
                 case 4:
-                    System.out.println("Mark as Completed feature not implemented yet.");
+
                     break;
                 case 5:
                     //Update values to file
@@ -105,14 +105,29 @@ public class App {
         System.out.print("Enter name of Task: ");
         String taskName = sc.nextLine();
 
-        System.out.print("Enter 0 for Urgent, 1 for Business, or 2 for Personal: ");
-        int category = sc.nextInt();
-        sc.nextLine(); 
+        int category = -1;
+        while (true) {
+            System.out.print("Enter 0 for Urgent, 1 for Business, or 2 for Personal: ");
+            try {
+                category = Integer.parseInt(sc.nextLine().trim());
+                if (category >= 0 && category <= 2) {
+                    break;
+                } else {
+                    System.out.println("Invalid category. Please enter 0, 1, or 2.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number (0, 1, or 2).");
+            }
+        }
 
         String dueDate = "";
         System.out.print("Enter due date? 1 for Yes, any other number for No: ");
-        int flag = sc.nextInt();
-        sc.nextLine();
+        int flag;
+        try {
+            flag = Integer.parseInt(sc.nextLine().trim());
+        } catch (NumberFormatException e) {
+            flag = 0; // default to "No"
+        }
 
         if (flag == 1) {
             while (true) {
@@ -130,6 +145,7 @@ public class App {
 
         return new Task(taskName, category, dueDate);
     }
+
 
     static boolean isValidDateFormat(String date) {
         if (date == null || date.length() != 10 || date.charAt(2) != '-' || date.charAt(5) != '-') {

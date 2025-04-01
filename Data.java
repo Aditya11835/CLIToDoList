@@ -74,34 +74,35 @@ public class Data{
         System.out.println("4. View All");
         System.out.print("Enter your choice: ");
 
-        int choice = sc.nextInt();
-        sc.nextLine(); // consume newline
+        int choice;
 
-        if (choice == 4) {
-            System.out.printf("%-25s %-15s %-15s %-10s\n", "Task Name", "Due Date", "Category", "Completed");
-            System.out.println("---------------------------------------------------------------------");
-            printTaskListWithCategory(importantTasks, "Urgent");
-            printTaskListWithCategory(businessTasks, "Business");
-            printTaskListWithCategory(personalTasks, "Personal");
-        } else {
-            System.out.printf("%-25s %-15s %-10s\n", "Task Name", "Due Date", "Completed");
-            System.out.println("----------------------------------------------------------");
+        try {
+            choice = sc.nextInt();
+            sc.nextLine(); // consume leftover newline
 
-            switch (choice) {
-                case 1:
-                    printTaskList(importantTasks);
-                    break;
-                case 2:
-                    printTaskList(businessTasks);
-                    break;
-                case 3:
-                    printTaskList(personalTasks);
-                    break;
-                default:
-                    System.out.println("Invalid choice.");
+            if (choice == 4) {
+                System.out.printf("%-25s %-15s %-15s %-10s\n", "Task Name", "Due Date", "Category", "Completed");
+                System.out.println("---------------------------------------------------------------------");
+                printTaskListWithCategory(importantTasks, "Urgent");
+                printTaskListWithCategory(businessTasks, "Business");
+                printTaskListWithCategory(personalTasks, "Personal");
+            } else {
+                System.out.printf("%-25s %-15s %-10s\n", "Task Name", "Due Date", "Completed");
+                System.out.println("----------------------------------------------------------");
+
+                switch (choice) {
+                    case 1 -> printTaskList(importantTasks);
+                    case 2 -> printTaskList(businessTasks);
+                    case 3 -> printTaskList(personalTasks);
+                    default -> System.out.println("Invalid choice. Please enter a number between 1 and 4.");
+                }
             }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a number.");
+            sc.nextLine(); // clear the invalid input
         }
     }
+
 
     private static void printTaskList(ArrayList<Task> taskList) {
         if (taskList == null || taskList.isEmpty()) {
