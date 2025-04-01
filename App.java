@@ -82,7 +82,7 @@ public class App {
                     Data.deleteTask();
                     break;
                 case 4:
-
+                    Data.markCompleteTask();
                     break;
                 case 5:
                     //Update values to file

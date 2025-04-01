@@ -7,6 +7,48 @@ public class Data{
     static ArrayList<Task> businessTasks = new ArrayList<>();
     static ArrayList<Task> personalTasks = new ArrayList<>();
 
+    public static void markCompleteTask() {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.printf("%-25s %-15s %-15s %-10s %-10s\n", "Task Name", "Due Date", "Category", "Completed", "ID");
+        System.out.println("-------------------------------------------------------------------------");
+        printTaskListWithID(allTasks);
+        System.out.println("\nEnter the ID of the task you want to mark as complete. Enter 0 to go back.");
+
+        try {
+            long idToComplete = Long.parseLong(sc.nextLine().trim());
+
+            if (idToComplete == 0) {
+                System.out.println("Cancelled.");
+                return;
+            }
+
+            boolean found = false;
+            for (Task task : allTasks) {
+                if (task.id == idToComplete) {
+                    if (task.isCompleted) {
+                        task.isCompleted = false;
+                        System.out.println("Task with ID " + idToComplete + "marked as incomplete.");
+                    } else {
+                        task.isCompleted = true;
+                        System.out.println("Task with ID " + idToComplete + " marked as complete.");
+                    }
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                System.out.println("No task found with that ID.");
+            }
+
+            categorizeTasks(); // Optional: to maintain consistency in categorized lists
+
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a valid task ID.");
+        }
+    }
+
+
     public static void categorizeTasks() {
         importantTasks.clear();
         businessTasks.clear();
