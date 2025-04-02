@@ -35,8 +35,18 @@ public class User {
             System.out.print("Enter username: ");
             String username = sc.nextLine().trim();
 
+            if (username.length() < 8 || username.contains(" ")) {
+                System.out.println("❌ Username must be at least 8 characters long and contain no spaces.");
+                return null;
+            }
+
             System.out.print("Enter password: ");
             String password = sc.nextLine().trim();
+
+            if (password.length() < 8 || password.contains(" ") || !password.matches("[a-zA-Z0-9@]+")) {
+                System.out.println("❌ Password must be at least 8 characters long, contain no spaces, and only include letters, digits, or '@'.");
+                return null;
+            }
 
             if (choice == 1) {
                 if (users.containsKey(username) && users.get(username).equals(password)) {
