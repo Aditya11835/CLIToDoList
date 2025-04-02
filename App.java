@@ -141,7 +141,6 @@ public class App {
                         saveTasksToFile(dataFile);
                         saveCounter(counterFile);
                         Data.getAllTasks().clear();
-                        Task.setCount(0);
                         System.out.println("Logged out. Switching user...");
                         choice = 6; // exit current session loop
                     }
