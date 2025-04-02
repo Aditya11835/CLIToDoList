@@ -1,10 +1,13 @@
 import java.io.*;
 import java.util.*;
+import java.util.logging.*;
 
-public class User {
+public final class User {
+
+    private static final Logger logger = Logger.getLogger(User.class.getName());
 
     // Load users from users.txt into a Map
-    public static Map<String, String> loadUsers(File userFile) {
+    private static Map<String, String> loadUsers(File userFile) {
         Map<String, String> userMap = new HashMap<>();
         if (!userFile.exists()) return userMap;
 
@@ -13,11 +16,11 @@ public class User {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
                 if (parts.length == 2) {
-                    userMap.put(parts[0], parts[1]); // username -> password
+                    userMap.put(parts[0], parts[1]);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error reading users file", e);
         }
         return userMap;
     }
@@ -53,7 +56,7 @@ public class User {
             if (choice == 1) {
                 if (users.containsKey(username) && users.get(username).equals(password)) {
                     System.out.println("✅ Login successful!");
-                    return userFolder.getAbsolutePath(); // ✅ return full path
+                    return userFolder.getAbsolutePath();
                 } else {
                     System.out.println("❌ Invalid credentials.");
                     return null;
@@ -63,20 +66,17 @@ public class User {
                     System.out.println("❗ User already exists.");
                     return null;
                 } else {
-                    // Save user to users.txt
                     try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, true))) {
                         writer.write(username + "|" + password);
                         writer.newLine();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.log(Level.SEVERE, "Error writing to users file", e);
                     }
 
-                    // Create user-specific folder
                     if (!userFolder.exists()) {
                         userFolder.mkdirs();
                     }
 
-                    // Create default user_data.txt and user_counter.txt
                     File dataFile = new File(userFolder, "data.txt");
                     File counterFile = new File(userFolder, "counter.txt");
 
@@ -88,11 +88,11 @@ public class User {
                             }
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.log(Level.SEVERE, "Error initializing user files", e);
                     }
 
                     System.out.println("🎉 Registered successfully!");
-                    return userFolder.getAbsolutePath(); // ✅ return full path
+                    return userFolder.getAbsolutePath();
                 }
             } else {
                 System.out.println("Invalid option.");
@@ -103,7 +103,7 @@ public class User {
             return null;
         } catch (Exception e) {
             System.out.println("❌ An unexpected error occurred.");
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Unexpected error during login/register", e);
             return null;
         }
     }

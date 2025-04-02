@@ -2,8 +2,12 @@
 
 import java.io.*;
 import java.util.*;
+import java.util.Base64;
+import java.util.logging.*;
 
 public class App {
+
+    private static final Logger logger = Logger.getLogger(App.class.getName());
 
     public static void main(String[] args) {
         final String basePath = System.getProperty("user.home") + File.separator +
@@ -14,154 +18,160 @@ public class App {
 
         File dataDir = new File(basePath);
         if (!dataDir.exists()) {
-            dataDir.mkdirs(); // create if not exists
+            dataDir.mkdirs();
         }
 
         File userFile = new File(dataDir, "users.txt");
-        String userFolderPath = null;
         Scanner sc = new Scanner(System.in);
 
-        while (userFolderPath == null) {
-            userFolderPath = User.loginOrRegister(sc, userFile);
-        }
+        while (true) {
+            String userFolderPath = null;
+            while (userFolderPath == null) {
+                userFolderPath = User.loginOrRegister(sc, userFile);
+            }
 
-        File userDir = new File(userFolderPath);
-        if (!userDir.exists()) {
-            userDir.mkdirs(); // Ensure user's folder is created
-        }
+            File userDir = new File(userFolderPath);
+            if (!userDir.exists()) {
+                userDir.mkdirs();
+            }
 
-        File dataFile = new File(userDir, "data.txt");
-        File counterFile = new File(userDir, "counter.txt");
+            File dataFile = new File(userDir, "data.txt");
+            File counterFile = new File(userDir, "counter.txt");
 
-        // Ensure counter.txt exists
-        if (!counterFile.exists()) {
-            try (FileWriter writer = new FileWriter(counterFile)) {
-                writer.write("0"); // default count
+            if (!counterFile.exists()) {
+                try (FileWriter writer = new FileWriter(counterFile)) {
+                    writer.write("0");
+                } catch (IOException e) {
+                    logger.log(Level.SEVERE, "Error creating counter file", e);
+                }
+            }
+
+            int savedCount = 0;
+            try (BufferedReader counterReader = new BufferedReader(new FileReader(counterFile))) {
+                String counterLine = counterReader.readLine();
+                if (counterLine != null && !counterLine.isEmpty()) {
+                    savedCount = Integer.parseInt(counterLine.trim());
+                }
+            } catch (IOException | NumberFormatException e) {
+                logger.log(Level.SEVERE, "Error reading counter file", e);
+            }
+
+            if (!dataFile.exists()) {
+                try {
+                    dataFile.createNewFile();
+                } catch (IOException e) {
+                    logger.log(Level.SEVERE, "Error creating data file", e);
+                }
+            }
+
+            try (BufferedReader dataReader = new BufferedReader(new FileReader(dataFile))) {
+                String dataLine;
+                while ((dataLine = dataReader.readLine()) != null) {
+                    if (!dataLine.isEmpty()) {
+                        String decrypted = new String(Base64.getDecoder().decode(dataLine));
+                        Data.addTask(Task.parseFromLine(decrypted));
+                    }
+                }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.log(Level.SEVERE, "Error reading data file", e);
             }
-        }
 
-        int savedCount = 0;
-        try (BufferedReader counterReader = new BufferedReader(new FileReader(counterFile))) {
-            String counterLine = counterReader.readLine();
-            if (counterLine != null && !counterLine.isEmpty()) {
-                savedCount = Integer.parseInt(counterLine.trim());
-            }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
-        }
+            Task.setCount(Math.max(Task.getCount(), savedCount));
+            Data.categorizeTasks();
 
-        // Ensure data.txt exists
-        if (!dataFile.exists()) {
-            try {
-                dataFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+            System.out.println("████████╗ ██████╗       ██████╗  ██████╗     ██╗     ██╗███████╗████████╗");
+            System.out.println("╚══██╔══╝██╔═══██╗      ██╔══██╗██╔═══██╗    ██║     ██║██╔════╝╚══██╔══╝");
+            System.out.println("   ██║   ██║   ██║█████╗██║  ██║██║   ██║    ██║     ██║███████╗   ██║   ");
+            System.out.println("   ██║   ██║   ██║╚════╝██║  ██║██║   ██║    ██║     ██║╚════██║   ██║   ");
+            System.out.println("   ██║   ╚██████╔╝      ██████╔╝╚██████╔╝    ███████╗██║███████║   ██║   ");
+            System.out.println("   ╚═╝    ╚═════╝       ╚═════╝  ╚═════╝     ╚══════╝╚═╝╚══════╝   ╚═╝   ");
+            System.out.println();
 
-        // Load tasks from data.txt
-        try (BufferedReader dataReader = new BufferedReader(new FileReader(dataFile))) {
-            String dataLine;
-            while ((dataLine = dataReader.readLine()) != null) {
-                if (!dataLine.isEmpty()) {
-                    Data.allTasks.add(Task.parseFromLine(dataLine));
+            int choice = 0;
+
+            while (choice != 6) {
+                System.out.println(
+                        """
+                                ==============================
+                                || 1. Add Task             ||
+                                || 2. View Tasks           ||
+                                || 3. Delete Task          ||
+                                || 4. Mark as Completed    ||
+                                || 5. Switch User / Log Out||
+                                || 6. Exit                 ||
+                                ==============================""");
+                System.out.print("Enter your choice: ");
+
+                if (sc.hasNextInt()) {
+                    choice = sc.nextInt();
+                    sc.nextLine();
+                } else {
+                    sc.nextLine();
+                    System.out.println("Please enter a valid number.");
+                    continue;
+                }
+
+                switch (choice) {
+                    case 1 -> {
+                        Task temp = inputFunc(sc);
+                        Data.addTask(temp);
+                        saveTasksToFile(dataFile);
+                        saveCounter(counterFile);
+                        System.out.println("Task added and saved successfully.");
+                    }
+                    case 2 -> Data.displayTasks(sc);
+                    case 3 -> {
+                        Data.deleteTask();
+                        saveTasksToFile(dataFile);
+                        saveCounter(counterFile);
+                        System.out.println("Task deleted and removed successfully.");
+                    }
+                    case 4 -> {
+                        Data.markCompleteTask();
+                        saveTasksToFile(dataFile);
+                        saveCounter(counterFile);
+                        System.out.println("Operation successful!");
+                    }
+                    case 5 -> {
+                        Data.getAllTasks().clear();
+                        System.out.println("Logged out. Switching user...");
+                        break;
+                    }
+                    case 6 -> {
+                        saveTasksToFile(dataFile);
+                        saveCounter(counterFile);
+                        System.out.println("Exiting To Do List App. Goodbye!");
+                        sc.close();
+                        return;
+                    }
+                    default -> System.out.println("Invalid choice. Try again.");
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        Task.count = Math.max(Task.count, savedCount);
-        Data.categorizeTasks();
-
-        // ASCII Banner
-        System.out.println("████████╗ ██████╗       ██████╗  ██████╗     ██╗     ██╗███████╗████████╗");
-        System.out.println("╚══██╔══╝██╔═══██╗      ██╔══██╗██╔═══██╗    ██║     ██║██╔════╝╚══██╔══╝");
-        System.out.println("   ██║   ██║   ██║█████╗██║  ██║██║   ██║    ██║     ██║███████╗   ██║   ");
-        System.out.println("   ██║   ██║   ██║╚════╝██║  ██║██║   ██║    ██║     ██║╚════██║   ██║   ");
-        System.out.println("   ██║   ╚██████╔╝      ██████╔╝╚██████╔╝    ███████╗██║███████║   ██║   ");
-        System.out.println("   ╚═╝    ╚═════╝       ╚═════╝  ╚═════╝     ╚══════╝╚═╝╚══════╝   ╚═╝   ");
-        System.out.println();
-
-        int choice = 0;
-
-        while (choice != 5) {
-            System.out.println(
-                    """
-                            ==============================
-                            || 1. Add Task             ||
-                            || 2. View Tasks           ||
-                            || 3. Delete Task          ||
-                            || 4. Mark as Completed    ||
-                            || 5. Exit                 ||
-                            ==============================""");
-            System.out.print("Enter your choice: ");
-
-            if (sc.hasNextInt()) {
-                choice = sc.nextInt();
-                sc.nextLine();
-            } else {
-                sc.nextLine(); // Skip invalid input
-                System.out.println("Please enter a valid number.");
-                continue;
-            }
-
-            switch (choice) {
-                case 1 -> {
-                    Task temp = inputFunc(sc);
-                    Data.addTask(temp);
-                    saveTasksToFile(dataFile);
-                    saveCounter(counterFile);
-                    System.out.println("Task added and saved successfully.");
-                }
-                case 2 -> Data.displayTasks(sc);
-                case 3 -> {
-                    Data.deleteTask();
-                    saveTasksToFile(dataFile);
-                    saveCounter(counterFile);
-                    System.out.println("Task deleted and removed successfully.");
-                }
-                case 4 -> {
-                    Data.markCompleteTask();
-                    saveTasksToFile(dataFile);
-                    saveCounter(counterFile);
-                    System.out.println("Operation successful!");
-                }
-                case 5 -> {
-                    saveTasksToFile(dataFile);
-                    saveCounter(counterFile);
-                    System.out.println("Exiting To Do List App. Goodbye!");
-                }
-                default -> System.out.println("Invalid choice. Try again.");
-            }
-        }
-
-        sc.close();
     }
 
-    public static void saveTasksToFile(File dataFile) {
+    private static void saveTasksToFile(File dataFile) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile))) {
-            for (Task task : Data.allTasks) {
-                writer.write(task.id + "|" + task.taskName + "|" + task.category + "|" + task.isCompleted + "|" + task.dueDate);
+            for (Task task : Data.getAllTasks()) {
+                String line = task.getId() + "|" + task.getTaskName() + "|" + task.getCategory() + "|" + task.isCompleted() + "|" + task.getDueDate();
+                String encrypted = Base64.getEncoder().encodeToString(line.getBytes());
+                writer.write(encrypted);
                 writer.newLine();
             }
         } catch (IOException e) {
-            System.out.println("Error saving tasks to file.");
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error saving tasks to file", e);
         }
     }
 
-    public static void saveCounter(File counterFile) {
+    private static void saveCounter(File counterFile) {
         try (FileWriter writer = new FileWriter(counterFile)) {
-            writer.write(String.valueOf(Task.count));
+            writer.write(String.valueOf(Task.getCount()));
         } catch (IOException e) {
-            System.out.println("Error saving task counter.");
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error saving task counter", e);
         }
     }
 
-    static Task inputFunc(Scanner sc) {
+    private static Task inputFunc(Scanner sc) {
         System.out.print("Enter name of Task: ");
         String taskName = sc.nextLine();
 
@@ -173,7 +183,7 @@ public class App {
                 if (category >= 0 && category <= 2) break;
                 else System.out.println("Invalid category. Please enter 0, 1, or 2.");
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number (0, 1, or 2).");
+                System.out.println("Invalid input. Please enter a valid number (0, 1, or 2).\n");
             }
         }
 
@@ -183,7 +193,7 @@ public class App {
         try {
             flag = Integer.parseInt(sc.nextLine().trim());
         } catch (NumberFormatException e) {
-            flag = 0; // default to "No"
+            flag = 0;
         }
 
         if (flag == 1) {
@@ -200,7 +210,7 @@ public class App {
         return new Task(taskName, category, dueDate);
     }
 
-    static boolean isValidDateFormat(String date) {
+    private static boolean isValidDateFormat(String date) {
         if (date == null || date.length() != 10 || date.charAt(2) != '-' || date.charAt(5) != '-') return false;
 
         try {

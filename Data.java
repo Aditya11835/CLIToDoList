@@ -1,11 +1,12 @@
 //package CLIToDoList;
+
 import java.util.*;
 
-public class Data{
-    static ArrayList<Task> allTasks = new ArrayList<>();
-    static ArrayList<Task> importantTasks = new ArrayList<>();
-    static ArrayList<Task> businessTasks = new ArrayList<>();
-    static ArrayList<Task> personalTasks = new ArrayList<>();
+public class Data {
+    private static final ArrayList<Task> allTasks = new ArrayList<>();
+    private static final ArrayList<Task> importantTasks = new ArrayList<>();
+    private static final ArrayList<Task> businessTasks = new ArrayList<>();
+    private static final ArrayList<Task> personalTasks = new ArrayList<>();
 
     public static void markCompleteTask() {
         Scanner sc = new Scanner(System.in);
@@ -25,14 +26,9 @@ public class Data{
 
             boolean found = false;
             for (Task task : allTasks) {
-                if (task.id == idToComplete) {
-                    if (task.isCompleted) {
-                        task.isCompleted = false;
-                        System.out.println("Task with ID " + idToComplete + "marked as incomplete.");
-                    } else {
-                        task.isCompleted = true;
-                        System.out.println("Task with ID " + idToComplete + " marked as complete.");
-                    }
+                if (task.getId() == idToComplete) {
+                    task.setCompleted(!task.isCompleted());
+                    System.out.println("Task with ID " + idToComplete + " marked as " + (task.isCompleted() ? "complete." : "incomplete."));
                     found = true;
                     break;
                 }
@@ -41,13 +37,12 @@ public class Data{
                 System.out.println("No task found with that ID.");
             }
 
-            categorizeTasks(); // Optional: to maintain consistency in categorized lists
+            categorizeTasks();
 
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a valid task ID.");
         }
     }
-
 
     public static void categorizeTasks() {
         importantTasks.clear();
@@ -55,15 +50,14 @@ public class Data{
         personalTasks.clear();
 
         for (Task task : allTasks) {
-            switch (task.category) {
+            switch (task.getCategory()) {
                 case 0 -> importantTasks.add(task);
                 case 1 -> businessTasks.add(task);
                 case 2 -> personalTasks.add(task);
             }
         }
 
-        // Sort all lists by creation ID (oldest to newest)
-        Comparator<Task> byId = Comparator.comparingLong(t -> t.id);
+        Comparator<Task> byId = Comparator.comparingLong(Task::getId);
         allTasks.sort(byId);
         importantTasks.sort(byId);
         businessTasks.sort(byId);
@@ -84,21 +78,20 @@ public class Data{
         printTaskListWithID(allTasks);
 
         System.out.println("\nEnter ID of task to be deleted. Enter 0 to go back.");
-        long idToDelete;
 
         try {
-            idToDelete = Long.parseLong(sc.nextLine());
+            long idToDelete = Long.parseLong(sc.nextLine());
 
             if (idToDelete == 0) {
                 System.out.println("Cancelled.");
                 return;
             }
 
-            boolean removed = allTasks.removeIf(task -> task.id == idToDelete);
+            boolean removed = allTasks.removeIf(task -> task.getId() == idToDelete);
 
             if (removed) {
                 System.out.println("Task with ID " + idToDelete + " deleted successfully.");
-                categorizeTasks(); // Re-sync categorized lists
+                categorizeTasks();
             } else {
                 System.out.println("No task found with that ID.");
             }
@@ -116,11 +109,9 @@ public class Data{
         System.out.println("4. View All");
         System.out.print("Enter your choice: ");
 
-        int choice;
-
         try {
-            choice = sc.nextInt();
-            sc.nextLine(); // consume leftover newline
+            int choice = sc.nextInt();
+            sc.nextLine();
 
             if (choice == 4) {
                 System.out.printf("%-25s %-15s %-15s %-10s\n", "Task Name", "Due Date", "Category", "Completed");
@@ -141,10 +132,9 @@ public class Data{
             }
         } catch (InputMismatchException e) {
             System.out.println("Invalid input. Please enter a number.");
-            sc.nextLine(); // clear the invalid input
+            sc.nextLine();
         }
     }
-
 
     private static void printTaskList(ArrayList<Task> taskList) {
         if (taskList == null || taskList.isEmpty()) {
@@ -153,9 +143,9 @@ public class Data{
         }
         for (Task task : taskList) {
             System.out.printf("%-25s %-15s %-10s\n",
-                    task.taskName,
-                    task.dueDate,
-                    task.isCompleted ? "Yes" : "No");
+                    task.getTaskName(),
+                    task.getDueDate(),
+                    task.isCompleted() ? "Yes" : "No");
         }
     }
 
@@ -165,25 +155,28 @@ public class Data{
         }
         for (Task task : taskList) {
             System.out.printf("%-25s %-15s %-15s %-10s\n",
-                    task.taskName,
-                    task.dueDate,
+                    task.getTaskName(),
+                    task.getDueDate(),
                     category,
-                    task.isCompleted ? "Yes" : "No");
+                    task.isCompleted() ? "Yes" : "No");
         }
     }
-    
+
     private static void printTaskListWithID(ArrayList<Task> taskList) {
         if (taskList == null || taskList.isEmpty()) {
             return;
         }
         for (Task task : taskList) {
             System.out.printf("%-25s %-15s %-15s %-10s %-10s\n",
-                    task.taskName,
-                    task.dueDate,
-                    task.category,
-                    task.isCompleted ? "Yes" : "No",
-                    task.id);
+                    task.getTaskName(),
+                    task.getDueDate(),
+                    task.getCategory(),
+                    task.isCompleted() ? "Yes" : "No",
+                    task.getId());
         }
     }
-}
 
+    public static ArrayList<Task> getAllTasks() {
+        return allTasks;
+    }
+}
