@@ -26,41 +26,50 @@ public class User {
     public static String loginOrRegister(Scanner sc, File userFile) {
         Map<String, String> users = loadUsers(userFile);
 
-        System.out.println("1. Login");
-        System.out.println("2. Register");
-        System.out.print("Choose: ");
-        int choice = Integer.parseInt(sc.nextLine().trim());
+        try {
+            System.out.println("1. Login");
+            System.out.println("2. Register");
+            System.out.print("Choose: ");
+            int choice = Integer.parseInt(sc.nextLine().trim());
 
-        System.out.print("Enter username: ");
-        String username = sc.nextLine().trim();
+            System.out.print("Enter username: ");
+            String username = sc.nextLine().trim();
 
-        System.out.print("Enter password: ");
-        String password = sc.nextLine().trim();
+            System.out.print("Enter password: ");
+            String password = sc.nextLine().trim();
 
-        if (choice == 1) {
-            if (users.containsKey(username) && users.get(username).equals(password)) {
-                System.out.println("✅ Login successful!");
-                return username;
-            } else {
-                System.out.println("❌ Invalid credentials.");
-                return null;
-            }
-        } else if (choice == 2) {
-            if (users.containsKey(username)) {
-                System.out.println("❗ User already exists.");
-                return null;
-            } else {
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, true))) {
-                    writer.write(username + "|" + password);
-                    writer.newLine();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            if (choice == 1) {
+                if (users.containsKey(username) && users.get(username).equals(password)) {
+                    System.out.println("✅ Login successful!");
+                    return username;
+                } else {
+                    System.out.println("❌ Invalid credentials.");
+                    return null;
                 }
-                System.out.println("🎉 Registered successfully!");
-                return username;
+            } else if (choice == 2) {
+                if (users.containsKey(username)) {
+                    System.out.println("❗ User already exists.");
+                    return null;
+                } else {
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, true))) {
+                        writer.write(username + "|" + password);
+                        writer.newLine();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("🎉 Registered successfully!");
+                    return username;
+                }
+            } else {
+                System.out.println("Invalid option.");
+                return null;
             }
-        } else {
-            System.out.println("Invalid option.");
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Invalid input. Please enter a number (1 or 2).");
+            return null;
+        } catch (Exception e) {
+            System.out.println("❌ An unexpected error occurred.");
+            e.printStackTrace();
             return null;
         }
     }
