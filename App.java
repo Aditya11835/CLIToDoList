@@ -26,6 +26,10 @@ public class App {
         }
 
         File userDir = new File(userFolderPath);
+        if (!userDir.exists()) {
+            userDir.mkdirs(); // Ensure user's folder is created
+        }
+
         File dataFile = new File(userDir, "data.txt");
         File counterFile = new File(userDir, "counter.txt");
 
