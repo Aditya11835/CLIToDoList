@@ -18,8 +18,17 @@ public class App {
             dataDir.mkdirs(); // create if not exists
         }
 
-        File counterFile = new File(dataDir, "counter.txt");
-        File dataFile = new File(dataDir, "data.txt");
+        File userFile = new File(dataDir, "users.txt");
+        String username = null;
+        Scanner sc = new Scanner(System.in);
+
+        while (username == null) {
+            username = User.loginOrRegister(sc, userFile);
+        }
+
+        File dataFile = new File(dataDir, username + "_data.txt");
+        File counterFile = new File(dataDir, username + "_counter.txt");
+
 
 
         // Ensure counter.txt exists
@@ -73,7 +82,7 @@ public class App {
         System.out.println("   ╚═╝    ╚═════╝       ╚═════╝  ╚═════╝     ╚══════╝╚═╝╚══════╝   ╚═╝   ");
         System.out.println();
 
-        Scanner sc = new Scanner(System.in);
+
         int choice = 0;
 
         while (choice != 5) {
