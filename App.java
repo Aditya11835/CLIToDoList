@@ -68,8 +68,13 @@ public class App {
                 String dataLine;
                 while ((dataLine = dataReader.readLine()) != null) {
                     if (!dataLine.isEmpty()) {
-                        String decrypted = new String(Base64.getDecoder().decode(dataLine));
-                        Data.addTask(Task.parseFromLine(decrypted));
+                        String decodedLine;
+                        try {
+                            decodedLine = new String(Base64.getDecoder().decode(dataLine));
+                        } catch (IllegalArgumentException e) {
+                            decodedLine = dataLine;
+                        }
+                        Data.addTask(Task.parseFromLine(decodedLine));
                     }
                 }
             } catch (IOException e) {
