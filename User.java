@@ -48,10 +48,12 @@ public class User {
                 return null;
             }
 
+            File userFolder = new File(userFile.getParent(), username);
+
             if (choice == 1) {
                 if (users.containsKey(username) && users.get(username).equals(password)) {
                     System.out.println("✅ Login successful!");
-                    return username;
+                    return userFolder.getAbsolutePath(); // ✅ return full path
                 } else {
                     System.out.println("❌ Invalid credentials.");
                     return null;
@@ -61,6 +63,7 @@ public class User {
                     System.out.println("❗ User already exists.");
                     return null;
                 } else {
+                    // Save user to users.txt
                     try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, true))) {
                         writer.write(username + "|" + password);
                         writer.newLine();
@@ -69,8 +72,6 @@ public class User {
                     }
 
                     // Create user-specific folder
-                    File baseDir = userFile.getParentFile();
-                    File userFolder = new File(baseDir, username);
                     if (!userFolder.exists()) {
                         userFolder.mkdirs();
                     }
@@ -91,7 +92,7 @@ public class User {
                     }
 
                     System.out.println("🎉 Registered successfully!");
-                    return username;
+                    return userFolder.getAbsolutePath(); // ✅ return full path
                 }
             } else {
                 System.out.println("Invalid option.");
