@@ -67,6 +67,29 @@ public class User {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
+                    // Create user-specific folder
+                    File baseDir = userFile.getParentFile();
+                    File userFolder = new File(baseDir, username);
+                    if (!userFolder.exists()) {
+                        userFolder.mkdirs();
+                    }
+
+                    // Create default user_data.txt and user_counter.txt
+                    File dataFile = new File(userFolder, "data.txt");
+                    File counterFile = new File(userFolder, "counter.txt");
+
+                    try {
+                        if (!dataFile.exists()) dataFile.createNewFile();
+                        if (!counterFile.exists()) {
+                            try (FileWriter writer = new FileWriter(counterFile)) {
+                                writer.write("0");
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     System.out.println("🎉 Registered successfully!");
                     return username;
                 }

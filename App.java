@@ -12,24 +12,22 @@ public class App {
                 "CLIToDoList" + File.separator +
                 "Data Files";
 
-
         File dataDir = new File(basePath);
         if (!dataDir.exists()) {
             dataDir.mkdirs(); // create if not exists
         }
 
         File userFile = new File(dataDir, "users.txt");
-        String username = null;
+        String userFolderPath = null;
         Scanner sc = new Scanner(System.in);
 
-        while (username == null) {
-            username = User.loginOrRegister(sc, userFile);
+        while (userFolderPath == null) {
+            userFolderPath = User.loginOrRegister(sc, userFile);
         }
 
-        File dataFile = new File(dataDir, username + "_data.txt");
-        File counterFile = new File(dataDir, username + "_counter.txt");
-
-
+        File userDir = new File(userFolderPath);
+        File dataFile = new File(userDir, "data.txt");
+        File counterFile = new File(userDir, "counter.txt");
 
         // Ensure counter.txt exists
         if (!counterFile.exists()) {
@@ -81,7 +79,6 @@ public class App {
         System.out.println("   ██║   ╚██████╔╝      ██████╔╝╚██████╔╝    ███████╗██║███████║   ██║   ");
         System.out.println("   ╚═╝    ╚═════╝       ╚═════╝  ╚═════╝     ╚══════╝╚═╝╚══════╝   ╚═╝   ");
         System.out.println();
-
 
         int choice = 0;
 
