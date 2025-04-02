@@ -138,9 +138,12 @@ public class App {
                         System.out.println("Operation successful!");
                     }
                     case 5 -> {
+                        saveTasksToFile(dataFile);
+                        saveCounter(counterFile);
                         Data.getAllTasks().clear();
+                        Task.setCount(0);
                         System.out.println("Logged out. Switching user...");
-                        break;
+                        choice = 6; // exit current session loop
                     }
                     case 6 -> {
                         saveTasksToFile(dataFile);
