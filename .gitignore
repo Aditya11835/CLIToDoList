@@ -11,6 +11,8 @@
 .mtj.tmp/
 
 # IntelliJ IDEA
+Data Files/
+
 .idea/
 *.iml
 *.iws
