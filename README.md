@@ -1,4 +1,4 @@
-# 📝 CLI To-Do List Manager (Java)
+ # 📝 CLI To-Do List Manager (Java)
 
 A command-line based To-Do List Manager written in Java. Supports multiple user accounts with login/registration, secure task saving using Base64 encoding, categorized task views, and persistent data storage in user-specific directories.
 
@@ -45,6 +45,16 @@ This project intentionally avoids using GUI frameworks or databases to maintain 
 
 - 👥 **Multi-user Support**
     - Switch between users without restarting the program.
+- 📳 **Modular Structure**
+  - 🔎 How it Reflects Modularity
+    - Separation of Concerns
+    We’ve kept UI (menu) logic in App.java, business logic in Data.java, data model in Task.java, and login logic in User.java.
+
+    - Logical Grouping
+Each class has a single responsibility, which is one of the key principles of modular design (SRP – Single Responsibility Principle).
+
+    - File Handling is Abstracted
+    We use User.java and App.java to manage file creation and login logic without bloating other classes.
 
 
 ## 📦 How to Run
