@@ -12,7 +12,7 @@ public class App {
     private static final Logger logger = Logger.getLogger(App.class.getName());
 
     public static void main(String[] args) {
-        //file location wj=here the data is being stored
+        //file location where the data is being stored
         final String basePath = System.getProperty("user.home") + File.separator +
                 "Projects" + File.separator +
                 "Java" + File.separator +
@@ -25,7 +25,7 @@ public class App {
             dataDir.mkdirs();
         }
 
-        //creates users.txt where user credentials will stored
+        //creates users.txt where user credentials will be stored
         File userFile = new File(dataDir, "users.txt");
         Scanner sc = new Scanner(System.in);
 

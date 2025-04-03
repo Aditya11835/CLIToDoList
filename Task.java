@@ -11,7 +11,7 @@ public class Task {
     private int category; // 0: important, 1: business, 2: personal
     private boolean isCompleted;
 
-    //get task details
+    //Task constructor
     public Task(String taskName, int category, String dueDate) {
         count++;
         this.id = count;
