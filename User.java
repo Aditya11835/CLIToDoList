@@ -1,3 +1,5 @@
+//start of user.java
+
 import java.io.*;
 import java.util.*;
 import java.util.logging.*;
@@ -108,3 +110,6 @@ public final class User {
         }
     }
 }
+
+
+//end of user.java

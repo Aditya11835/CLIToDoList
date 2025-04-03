@@ -1,3 +1,5 @@
+//start of data.java
+
 //package CLIToDoList;
 
 import java.util.*;
@@ -8,9 +10,11 @@ public class Data {
     private static final ArrayList<Task> businessTasks = new ArrayList<>();
     private static final ArrayList<Task> personalTasks = new ArrayList<>();
 
+    //choice# 3.Mark task as complete
     public static void markCompleteTask() {
         Scanner sc = new Scanner(System.in);
 
+        //table format output
         System.out.printf("%-25s %-15s %-15s %-10s %-10s\n", "Task Name", "Due Date", "Category", "Completed", "ID");
         System.out.println("-------------------------------------------------------------------------");
         printTaskListWithID(allTasks);
@@ -21,6 +25,7 @@ public class Data {
 
             if (idToComplete == 0) {
                 System.out.println("Cancelled.");
+                sc.close();
                 return;
             }
 
@@ -42,8 +47,10 @@ public class Data {
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a valid task ID.");
         }
+        sc.close();
     }
 
+    //categorisation of tasks under three categories
     public static void categorizeTasks() {
         importantTasks.clear();
         businessTasks.clear();
@@ -57,6 +64,8 @@ public class Data {
             }
         }
 
+        //comparator to arrange task based on priority
+        //Priority:: (high)Important->Business->Personal(low)
         Comparator<Task> byId = Comparator.comparingLong(Task::getId);
         allTasks.sort(byId);
         importantTasks.sort(byId);
@@ -64,11 +73,14 @@ public class Data {
         personalTasks.sort(byId);
     }
 
+    //add task to array
     public static void addTask(Task task) {
         allTasks.add(task);
         categorizeTasks();
     }
 
+    //asks user for what task to delete and remove task from array
+    //based on uid from user input
     public static void deleteTask() {
         Scanner sc = new Scanner(System.in);
 
@@ -84,6 +96,7 @@ public class Data {
 
             if (idToDelete == 0) {
                 System.out.println("Cancelled.");
+                sc.close();
                 return;
             }
 
@@ -99,6 +112,7 @@ public class Data {
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a valid task ID.");
         }
+        sc.close();
     }
 
     public static void displayTasks(Scanner sc) {
@@ -136,6 +150,7 @@ public class Data {
         }
     }
 
+    //display in tabular format
     private static void printTaskList(ArrayList<Task> taskList) {
         if (taskList == null || taskList.isEmpty()) {
             System.out.println("No tasks found.");
@@ -149,6 +164,7 @@ public class Data {
         }
     }
 
+    //tabular format for all task display
     private static void printTaskListWithCategory(ArrayList<Task> taskList, String category) {
         if (taskList == null || taskList.isEmpty()) {
             return;
@@ -162,6 +178,7 @@ public class Data {
         }
     }
 
+    //tabular format for deletion
     private static void printTaskListWithID(ArrayList<Task> taskList) {
         if (taskList == null || taskList.isEmpty()) {
             return;
@@ -180,3 +197,6 @@ public class Data {
         return allTasks;
     }
 }
+
+
+//end of data.java

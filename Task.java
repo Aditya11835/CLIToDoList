@@ -1,3 +1,5 @@
+//start of task.java
+
 //package CLIToDoList;
 
 public class Task {
@@ -9,6 +11,7 @@ public class Task {
     private int category; // 0: important, 1: business, 2: personal
     private boolean isCompleted;
 
+    //get task details
     public Task(String taskName, int category, String dueDate) {
         count++;
         this.id = count;
@@ -75,3 +78,6 @@ public class Task {
         isCompleted = completed;
     }
 }
+
+
+//end of task.java

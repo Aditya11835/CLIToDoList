@@ -1,3 +1,5 @@
+//start of app.java
+
 //package CLIToDoList;
 
 import java.io.*;
@@ -10,26 +12,31 @@ public class App {
     private static final Logger logger = Logger.getLogger(App.class.getName());
 
     public static void main(String[] args) {
+        //file location wj=here the data is being stored
         final String basePath = System.getProperty("user.home") + File.separator +
                 "Projects" + File.separator +
                 "Java" + File.separator +
                 "CLIToDoList" + File.separator +
                 "Data Files";
-
+        
+        //if file does not exist, create new file with filename as in path
         File dataDir = new File(basePath);
         if (!dataDir.exists()) {
             dataDir.mkdirs();
         }
 
+        //creates users.txt where user credentials will stored
         File userFile = new File(dataDir, "users.txt");
         Scanner sc = new Scanner(System.in);
 
+        //login menu
         while (true) {
             String userFolderPath = null;
             while (userFolderPath == null) {
                 userFolderPath = User.loginOrRegister(sc, userFile);
             }
 
+            //create user file if not exist
             File userDir = new File(userFolderPath);
             if (!userDir.exists()) {
                 userDir.mkdirs();
@@ -46,6 +53,7 @@ public class App {
                 }
             }
 
+            //counter for tasks created (serves as uid)
             int savedCount = 0;
             try (BufferedReader counterReader = new BufferedReader(new FileReader(counterFile))) {
                 String counterLine = counterReader.readLine();
@@ -56,6 +64,7 @@ public class App {
                 logger.log(Level.SEVERE, "Error reading counter file", e);
             }
 
+            //this file stores tasks in form of hash (ensures security)
             if (!dataFile.exists()) {
                 try {
                     dataFile.createNewFile();
@@ -81,8 +90,11 @@ public class App {
                 logger.log(Level.SEVERE, "Error reading data file", e);
             }
 
+            //updates task count if any changes made
             Task.setCount(Math.max(Task.getCount(), savedCount));
             Data.categorizeTasks();
+
+            //ui header stylish
 
             System.out.println("████████╗ ██████╗       ██████╗  ██████╗     ██╗     ██╗███████╗████████╗");
             System.out.println("╚══██╔══╝██╔═══██╗      ██╔══██╗██╔═══██╗    ██║     ██║██╔════╝╚══██╔══╝");
@@ -94,6 +106,7 @@ public class App {
 
             int choice = 0;
 
+            //user interactive choice menu
             while (choice != 6) {
                 System.out.println(
                         """
@@ -157,6 +170,7 @@ public class App {
         }
     }
 
+    //writes task into data.txt
     private static void saveTasksToFile(File dataFile) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile))) {
             for (Task task : Data.getAllTasks()) {
@@ -170,6 +184,7 @@ public class App {
         }
     }
 
+    //updates counter upon an action from user
     private static void saveCounter(File counterFile) {
         try (FileWriter writer = new FileWriter(counterFile)) {
             writer.write(String.valueOf(Task.getCount()));
@@ -178,6 +193,7 @@ public class App {
         }
     }
 
+    //user input for task details
     private static Task inputFunc(Scanner sc) {
         System.out.print("Enter name of Task: ");
         String taskName = sc.nextLine();
@@ -217,6 +233,7 @@ public class App {
         return new Task(taskName, category, dueDate);
     }
 
+    //checks date is in correct format
     private static boolean isValidDateFormat(String date) {
         if (date == null || date.length() != 10 || date.charAt(2) != '-' || date.charAt(5) != '-') return false;
 
@@ -239,3 +256,6 @@ public class App {
         return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
     }
 }
+
+
+//end of app.java
