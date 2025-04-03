@@ -81,9 +81,7 @@ public class Data {
 
     //asks user for what task to delete and remove task from array
     //based on uid from user input
-    public static void deleteTask() {
-        Scanner sc = new Scanner(System.in);
-
+    public static void deleteTask(Scanner sc) {
         System.out.printf("%-25s %-15s %-15s %-10s %-10s\n", "Task Name", "Due Date", "Category", "Completed", "ID");
         System.out.println("-------------------------------------------------------------------------");
 
@@ -92,11 +90,10 @@ public class Data {
         System.out.println("\nEnter ID of task to be deleted. Enter 0 to go back.");
 
         try {
-            long idToDelete = Long.parseLong(sc.nextLine());
+            long idToDelete = Long.parseLong(sc.nextLine().trim());
 
             if (idToDelete == 0) {
                 System.out.println("Cancelled.");
-                sc.close();
                 return;
             }
 
@@ -112,8 +109,8 @@ public class Data {
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a valid task ID.");
         }
-        sc.close();
     }
+
 
     public static void displayTasks(Scanner sc) {
         System.out.println("\nWhich tasks do you want to view?");

@@ -119,14 +119,26 @@ public class App {
                                 ==============================""");
                 System.out.print("Enter your choice: ");
 
-                if (sc.hasNextInt()) {
-                    choice = sc.nextInt();
-                    sc.nextLine();
-                } else {
-                    sc.nextLine();
-                    System.out.println("Please enter a valid number.");
-                    continue;
+                try {
+                    if (sc.hasNextLine()) {
+                        String line = sc.nextLine().trim();
+                        if (line.matches("\\d")) {
+                            choice = Integer.parseInt(line);
+                        } else {
+                            System.out.println("Please enter a valid number (1–6).");
+                            continue;
+                        }
+                    } else {
+                        System.out.println("⚠️ No more input available. Exiting...");
+                        sc.close();
+                        return;
+                    }
+                } catch (NoSuchElementException e) {
+                    System.out.println("⚠️ Input stream closed unexpectedly. Exiting...");
+                    sc.close();
+                    return;
                 }
+
 
                 switch (choice) {
                     case 1 -> {
@@ -138,7 +150,7 @@ public class App {
                     }
                     case 2 -> Data.displayTasks(sc);
                     case 3 -> {
-                        Data.deleteTask();
+                        Data.deleteTask(sc);
                         saveTasksToFile(dataFile);
                         saveCounter(counterFile);
                         System.out.println("Task deleted and removed successfully.");
