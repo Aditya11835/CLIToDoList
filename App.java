@@ -18,7 +18,7 @@ public class App {
                 "Java" + File.separator +
                 "CLIToDoList" + File.separator +
                 "Data Files";
-        
+
         //if file does not exist, create new file with filename as in path
         File dataDir = new File(basePath);
         if (!dataDir.exists()) {
@@ -29,7 +29,6 @@ public class App {
         File userFile = new File(dataDir, "users.txt");
         Scanner sc = new Scanner(System.in);
 
-        //login menu
         while (true) {
             String userFolderPath = null;
             while (userFolderPath == null) {
@@ -170,7 +169,6 @@ public class App {
         }
     }
 
-    //writes task into data.txt
     private static void saveTasksToFile(File dataFile) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile))) {
             for (Task task : Data.getAllTasks()) {
@@ -184,7 +182,6 @@ public class App {
         }
     }
 
-    //updates counter upon an action from user
     private static void saveCounter(File counterFile) {
         try (FileWriter writer = new FileWriter(counterFile)) {
             writer.write(String.valueOf(Task.getCount()));
@@ -193,7 +190,6 @@ public class App {
         }
     }
 
-    //user input for task details
     private static Task inputFunc(Scanner sc) {
         System.out.print("Enter name of Task: ");
         String taskName = sc.nextLine();
